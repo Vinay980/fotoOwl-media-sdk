@@ -9,6 +9,9 @@ export interface MediaCardProps {
   media: MediaItem;
   onSelect?: (media: MediaItem) => void;
   className?: string;
+  imageClassName?: string;
+  videoBadgeClassName?: string;
+  photographerClassName?: string;
   children?: ReactNode;
 }
 
@@ -16,6 +19,9 @@ export function MediaCard({
   media,
   onSelect,
   className,
+  imageClassName,
+  videoBadgeClassName,
+  photographerClassName,
   children,
 }: MediaCardProps) {
   const handleClick = () => {
@@ -27,7 +33,8 @@ export function MediaCard({
   ) => {
     if (
       onSelect &&
-      (event.key === "Enter" || event.key === " ")
+      (event.key === "Enter" ||
+        event.key === " ")
     ) {
       event.preventDefault();
       onSelect(media);
@@ -44,7 +51,10 @@ export function MediaCard({
       {children ?? (
         <>
           <img
-            src={media.thumbnailUrl ?? media.url}
+            className={imageClassName}
+            src={
+              media.thumbnailUrl ?? media.url
+            }
             alt={
               media.photographer
                 ? `Photo by ${media.photographer.name}`
@@ -54,13 +64,15 @@ export function MediaCard({
           />
 
           {media.type === "video" && (
-            <span aria-label="Video">
+            <span className={videoBadgeClassName}>
               Video
             </span>
           )}
 
           {media.photographer && (
-            <p>{media.photographer.name}</p>
+            <p className={photographerClassName}>
+              {media.photographer.name}
+            </p>
           )}
         </>
       )}

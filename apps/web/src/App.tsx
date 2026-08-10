@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import { useMediaSearch } from "@fotoowl/media-react";
-
 import { MediaGrid, MediaSearch } from "@fotoowl/media-ui-react";
 
 export default function App() {
@@ -33,34 +32,34 @@ export default function App() {
           onSearch={handleSearch}
           loading={loading}
           initialQuery={query}
+          className="search-form"
+          inputClassName="search-input"
+          buttonClassName="search-button"
         />
       </header>
 
       <section className="results">
         {loading && !data && <p className="status">Loading media...</p>}
 
-        {error && <p className="error">{error.message}</p>}
+        {error && (
+          <p className="error" role="alert">
+            {error.message}
+          </p>
+        )}
 
         {data && (
           <>
             <div className="results-header">
               <h2>Results for "{query}"</h2>
 
-              <span>{data.totalResults} results</span>
+              <span>{data.totalResults ?? 0} results</span>
             </div>
 
-            <MediaGrid items={data.items} columns={4} />
-
-            <p className="attribution">
-              Photos provided by{" "}
-              <a
-                href="https://www.pexels.com/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Pexels
-              </a>
-            </p>
+            <MediaGrid
+              items={data.items}
+              className="media-grid"
+              itemClassName="media-card"
+            />
 
             {hasNextPage && (
               <div className="load-more">
@@ -75,6 +74,17 @@ export default function App() {
                 </button>
               </div>
             )}
+
+            <p className="attribution">
+              Photos provided by{" "}
+              <a
+                href="https://www.pexels.com/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Pexels
+              </a>
+            </p>
           </>
         )}
       </section>

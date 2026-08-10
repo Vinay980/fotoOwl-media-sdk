@@ -20,21 +20,23 @@ export function MediaSearch({
   inputClassName,
   buttonClassName,
 }: MediaSearchProps) {
-  const [query, setQuery] = useState(initialQuery);
+  const [query, setQuery] =
+    useState(initialQuery);
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = (
+    event: FormEvent,
+  ) => {
     event.preventDefault();
 
-    const normalizedQuery = query.trim();
+    const normalizedQuery =
+      query.trim();
 
-    if (!normalizedQuery) {
+    if (!normalizedQuery || loading) {
       return;
     }
 
     onSearch(normalizedQuery);
   };
-
-  const isDisabled = loading || !query.trim();
 
   return (
     <form
@@ -43,9 +45,9 @@ export function MediaSearch({
     >
       <input
         value={query}
-        onChange={(event) => {
-          setQuery(event.target.value);
-        }}
+        onChange={(event) =>
+          setQuery(event.target.value)
+        }
         placeholder="Search media..."
         aria-label="Search media"
         className={inputClassName}
@@ -53,10 +55,14 @@ export function MediaSearch({
 
       <button
         type="submit"
-        disabled={isDisabled}
+        disabled={
+          loading || !query.trim()
+        }
         className={buttonClassName}
       >
-        {loading ? "Searching..." : "Search"}
+        {loading
+          ? "Searching..."
+          : "Search"}
       </button>
     </form>
   );
