@@ -1,0 +1,127 @@
+:root {
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: #111827;
+  background: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.page {
+  width: min(1400px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 48px 0 80px;
+}
+
+.hero {
+  max-width: 760px;
+  margin-bottom: 48px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.subtitle {
+  margin: 20px 0 28px;
+  color: #64748b;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.results {
+  min-height: 300px;
+}
+
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.results-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.results-header span {
+  color: #64748b;
+}
+
+.status,
+.error {
+  padding: 24px;
+  text-align: center;
+}
+
+.error {
+  color: #b91c1c;
+}
+
+.load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.load-more button {
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 8px;
+  background: #111827;
+  color: white;
+  cursor: pointer;
+}
+
+.load-more button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .page {
+    width: min(
+      100% - 24px,
+      700px
+    );
+  }
+}
+
+.attribution {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.attribution a {
+  text-decoration: underline;
+}

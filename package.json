@@ -1,0 +1,17 @@
+{
+  "name": "fotoowl-media-sdk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Headless media SDK ecosystem for Foto Owl take-home assignment",
+  "packageManager": "pnpm@11.21.0",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@fotoowl/media-ui-native",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@fotoowl/media-core": "workspace:*",
+    "@fotoowl/media-native": "workspace:*",
+    "react": "^19.1.0",
+    "react-native": "*"
+  },
+  "devDependencies": {
+    "@testing-library/react-native": "^14.0.1",
+    "@types/react": "^19.1.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}
