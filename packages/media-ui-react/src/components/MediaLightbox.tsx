@@ -1,11 +1,20 @@
+import type { ReactNode } from "react";
+
 import type { MediaItem } from "../types/media.js";
 
 export interface MediaLightboxProps {
   media: MediaItem | null;
   onClose: () => void;
+  className?: string;
+  children?: ReactNode;
 }
 
-export function MediaLightbox({ media, onClose }: MediaLightboxProps) {
+export function MediaLightbox({
+  media,
+  onClose,
+  className,
+  children,
+}: MediaLightboxProps) {
   if (!media) {
     return null;
   }
@@ -15,17 +24,8 @@ export function MediaLightbox({ media, onClose }: MediaLightboxProps) {
       role="dialog"
       aria-modal="true"
       aria-label="Media preview"
+      className={className}
       onClick={onClose}
-      style={{
-        position: "fixed",
-        inset: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 24,
-        background: "rgba(0, 0, 0, 0.85)",
-        zIndex: 1000,
-      }}
     >
       <button
         type="button"
@@ -34,46 +34,35 @@ export function MediaLightbox({ media, onClose }: MediaLightboxProps) {
           onClose();
         }}
         aria-label="Close"
-        style={{
-          position: "absolute",
-          top: 16,
-          right: 16,
-          padding: "8px 12px",
-          border: 0,
-          borderRadius: 8,
-          cursor: "pointer",
-        }}
       >
         Close
       </button>
 
-      {media.type === "video" && media.videoUrl ? (
-        <video
-          src={media.videoUrl}
-          controls
-          autoPlay
-          style={{
-            maxWidth: "90vw",
-            maxHeight: "90vh",
-          }}
-          onClick={(event) => event.stopPropagation()}
-        />
-      ) : (
-        <img
-          src={media.url}
-          alt={
-            media.photographer
-              ? `Photo by ${media.photographer.name}`
-              : "Media preview"
-          }
-          style={{
-            maxWidth: "90vw",
-            maxHeight: "90vh",
-            objectFit: "contain",
-          }}
-          onClick={(event) => event.stopPropagation()}
-        />
-      )}
+      <div
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
+      >
+        {children ?? (
+          media.type === "video" && media.videoUrl ? (
+            <video
+              src={media.videoUrl}
+              controls
+              autoPlay
+              aria-label="Video preview"
+            />
+          ) : (
+            <img
+              src={media.url}
+              alt={
+                media.photographer
+                  ? `Photo by ${media.photographer.name}`
+                  : "Media preview"
+              }
+            />
+          )
+        )}
+      </div>
     </div>
   );
 }

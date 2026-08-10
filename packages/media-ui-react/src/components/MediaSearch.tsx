@@ -7,18 +7,22 @@ export interface MediaSearchProps {
   initialQuery?: string;
   onSearch: (query: string) => void;
   loading?: boolean;
+  className?: string;
+  inputClassName?: string;
+  buttonClassName?: string;
 }
 
 export function MediaSearch({
   initialQuery = "",
   onSearch,
   loading = false,
+  className,
+  inputClassName,
+  buttonClassName,
 }: MediaSearchProps) {
   const [query, setQuery] = useState(initialQuery);
 
-  const handleSubmit = (
-    event: FormEvent<HTMLFormElement>,
-  ) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
     const normalizedQuery = query.trim();
@@ -30,43 +34,27 @@ export function MediaSearch({
     onSearch(normalizedQuery);
   };
 
+  const isDisabled = loading || !query.trim();
+
   return (
     <form
       onSubmit={handleSubmit}
-      style={{
-        display: "flex",
-        gap: 8,
-        width: "100%",
-      }}
+      className={className}
     >
       <input
         value={query}
-        onChange={(event) =>
-          setQuery(event.target.value)
-        }
+        onChange={(event) => {
+          setQuery(event.target.value);
+        }}
         placeholder="Search media..."
         aria-label="Search media"
-        style={{
-          flex: 1,
-          minWidth: 0,
-          padding: "10px 12px",
-          border: "1px solid #d1d5db",
-          borderRadius: 8,
-        }}
+        className={inputClassName}
       />
 
       <button
         type="submit"
-        disabled={loading || !query.trim()}
-        style={{
-          padding: "10px 16px",
-          border: 0,
-          borderRadius: 8,
-          cursor:
-            loading || !query.trim()
-              ? "not-allowed"
-              : "pointer",
-        }}
+        disabled={isDisabled}
+        className={buttonClassName}
       >
         {loading ? "Searching..." : "Search"}
       </button>

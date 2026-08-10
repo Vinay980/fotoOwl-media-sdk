@@ -1,5 +1,6 @@
-import type { MediaItem } from "@fotoowl/media-core";
+import type { ReactNode } from "react";
 
+import type { MediaItem } from "../types/media.js";
 import {
   MediaCard,
   type MediaCardProps,
@@ -9,28 +10,26 @@ export interface MediaGridProps {
   items: MediaItem[];
   onSelect?: MediaCardProps["onSelect"];
   columns?: number;
+  className?: string;
+  children?: ReactNode;
 }
 
 export function MediaGrid({
   items,
   onSelect,
-  columns = 4,
+  className,
+  children,
 }: MediaGridProps) {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-        gap: 16,
-      }}
-    >
-      {items.map((media) => (
-        <MediaCard
-          key={`${media.type}-${media.id}`}
-          media={media}
-          onSelect={onSelect}
-        />
-      ))}
+    <div className={className}>
+      {children ??
+        items.map((media) => (
+          <MediaCard
+            key={`${media.type}-${media.id}`}
+            media={media}
+            onSelect={onSelect}
+          />
+        ))}
     </div>
   );
 }

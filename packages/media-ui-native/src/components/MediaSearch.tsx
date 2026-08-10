@@ -1,4 +1,12 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Pressable,
+  Text,
+  TextInput,
+  View,
+  type StyleProp,
+  type TextStyle,
+  type ViewStyle,
+} from "react-native";
 
 import { useState } from "react";
 
@@ -6,19 +14,28 @@ export interface MediaSearchProps {
   initialQuery?: string;
   onSearch: (query: string) => void;
   loading?: boolean;
+  containerStyle?: StyleProp<ViewStyle>;
+  inputStyle?: StyleProp<TextStyle>;
+  buttonStyle?: StyleProp<ViewStyle>;
+  buttonTextStyle?: StyleProp<TextStyle>;
 }
 
 export function MediaSearch({
   initialQuery = "",
   onSearch,
   loading = false,
+  containerStyle,
+  inputStyle,
+  buttonStyle,
+  buttonTextStyle,
 }: MediaSearchProps) {
   const [query, setQuery] = useState(initialQuery);
 
-  const handleSearch = () => {
-    const normalizedQuery = query.trim();
+  const normalizedQuery = query.trim();
+  const disabled = loading || !normalizedQuery;
 
-    if (!normalizedQuery || loading) {
+  const handleSearch = () => {
+    if (disabled) {
       return;
     }
 
@@ -26,65 +43,32 @@ export function MediaSearch({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={containerStyle}>
       <TextInput
         value={query}
         onChangeText={setQuery}
         placeholder="Search media..."
         accessibilityLabel="Search media"
-        style={styles.input}
         editable={!loading}
-        returnKeyType="search"
+        style={inputStyle}
         onSubmitEditing={handleSearch}
+        returnKeyType="search"
       />
 
       <Pressable
         onPress={handleSearch}
-        disabled={loading || !query.trim()}
-        style={[
-          styles.button,
-          (loading || !query.trim()) && styles.buttonDisabled,
-        ]}
+        disabled={disabled}
+        accessibilityRole="button"
+        accessibilityState={{
+          disabled,
+          busy: loading,
+        }}
+        style={buttonStyle}
       >
-        <Text style={styles.buttonText}>
+        <Text style={buttonTextStyle}>
           {loading ? "Searching..." : "Search"}
         </Text>
       </Pressable>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    gap: 8,
-    width: "100%",
-  },
-
-  input: {
-    flex: 1,
-    minWidth: 0,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: "#d1d5db",
-    borderRadius: 8,
-  },
-
-  button: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    justifyContent: "center",
-    borderRadius: 8,
-    backgroundColor: "#111827",
-  },
-
-  buttonDisabled: {
-    opacity: 0.5,
-  },
-
-  buttonText: {
-    color: "#ffffff",
-    fontSize: 14,
-  },
-});

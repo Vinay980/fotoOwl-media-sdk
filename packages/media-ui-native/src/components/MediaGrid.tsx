@@ -1,10 +1,11 @@
 import {
   FlatList,
   type ListRenderItem,
+  type StyleProp,
+  type ViewStyle,
 } from "react-native";
 
 import type { MediaItem } from "../types/media.js";
-
 import {
   MediaCard,
   type MediaCardProps,
@@ -15,6 +16,8 @@ export interface MediaGridProps {
   onSelect?: MediaCardProps["onSelect"];
   columns?: number;
   onEndReached?: () => void;
+  contentContainerStyle?: StyleProp<ViewStyle>;
+  columnWrapperStyle?: StyleProp<ViewStyle>;
 }
 
 export function MediaGrid({
@@ -22,10 +25,10 @@ export function MediaGrid({
   onSelect,
   columns = 2,
   onEndReached,
+  contentContainerStyle,
+  columnWrapperStyle,
 }: MediaGridProps) {
-  const renderItem: ListRenderItem<MediaItem> = ({
-    item,
-  }) => (
+  const renderItem: ListRenderItem<MediaItem> = ({ item }) => (
     <MediaCard
       media={item}
       onSelect={onSelect}
@@ -40,12 +43,8 @@ export function MediaGrid({
         `${item.type}-${item.id}`
       }
       numColumns={columns}
-      columnWrapperStyle={{
-        gap: 12,
-      }}
-      contentContainerStyle={{
-        gap: 12,
-      }}
+      columnWrapperStyle={columnWrapperStyle}
+      contentContainerStyle={contentContainerStyle}
       onEndReached={onEndReached}
       onEndReachedThreshold={0.5}
     />

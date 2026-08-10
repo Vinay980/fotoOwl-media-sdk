@@ -1,84 +1,69 @@
+import type {
+  KeyboardEvent,
+  ReactNode,
+} from "react";
+
 import type { MediaItem } from "../types/media.js";
 
 export interface MediaCardProps {
   media: MediaItem;
   onSelect?: (media: MediaItem) => void;
+  className?: string;
+  children?: ReactNode;
 }
 
-export function MediaCard({ media, onSelect }: MediaCardProps) {
+export function MediaCard({
+  media,
+  onSelect,
+  className,
+  children,
+}: MediaCardProps) {
   const handleClick = () => {
     onSelect?.(media);
   };
 
+  const handleKeyDown = (
+    event: KeyboardEvent<HTMLElement>,
+  ) => {
+    if (
+      onSelect &&
+      (event.key === "Enter" || event.key === " ")
+    ) {
+      event.preventDefault();
+      onSelect(media);
+    }
+  };
+
   return (
     <article
-      style={{
-        border: "1px solid #e5e7eb",
-        borderRadius: 12,
-        overflow: "hidden",
-        background: "#ffffff",
-        cursor: onSelect ? "pointer" : "default",
-      }}
+      className={className}
       onClick={handleClick}
+      tabIndex={onSelect ? 0 : undefined}
+      onKeyDown={handleKeyDown}
     >
-      <div
-        style={{
-          position: "relative",
-          aspectRatio: "16 / 10",
-          overflow: "hidden",
-        }}
-      >
-        <img
-          src={media.thumbnailUrl ?? media.url}
-          alt={
-            media.photographer
-              ? `Photo by ${media.photographer.name}`
-              : "Media preview"
-          }
-          loading="lazy"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            display: "block",
-          }}
-        />
+      {children ?? (
+        <>
+          <img
+            src={media.thumbnailUrl ?? media.url}
+            alt={
+              media.photographer
+                ? `Photo by ${media.photographer.name}`
+                : "Media preview"
+            }
+            loading="lazy"
+          />
 
-        {media.type === "video" && (
-          <span
-            style={{
-              position: "absolute",
-              top: 8,
-              right: 8,
-              padding: "4px 8px",
-              borderRadius: 999,
-              background: "rgba(0, 0, 0, 0.7)",
-              color: "#ffffff",
-              fontSize: 12,
-            }}
-          >
-            Video
-          </span>
-        )}
-      </div>
+          {media.type === "video" && (
+            <span aria-label="Video">
+              Video
+            </span>
+          )}
 
-      <div
-        style={{
-          padding: 12,
-        }}
-      >
-        {media.photographer && (
-          <p
-            style={{
-              margin: 0,
-              fontSize: 14,
-              color: "#4b5563",
-            }}
-          >
-            {media.photographer.name}
-          </p>
-        )}
-      </div>
+          {media.photographer && (
+            <p>{media.photographer.name}</p>
+          )}
+        </>
+      )}
     </article>
   );
 }

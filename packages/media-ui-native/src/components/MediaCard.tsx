@@ -1,9 +1,12 @@
 import {
   Image,
   Pressable,
-  StyleSheet,
   Text,
   View,
+  type ImageStyle,
+  type StyleProp,
+  type TextStyle,
+  type ViewStyle,
 } from "react-native";
 
 import type { MediaItem } from "../types/media.js";
@@ -11,87 +14,56 @@ import type { MediaItem } from "../types/media.js";
 export interface MediaCardProps {
   media: MediaItem;
   onSelect?: (media: MediaItem) => void;
+  style?: StyleProp<ViewStyle>;
+  imageStyle?: StyleProp<ImageStyle>;
+  textStyle?: StyleProp<TextStyle>;
+  badgeStyle?: StyleProp<ViewStyle>;
+  badgeTextStyle?: StyleProp<TextStyle>;
 }
 
 export function MediaCard({
   media,
   onSelect,
+  style,
+  imageStyle,
+  textStyle,
+  badgeStyle,
+  badgeTextStyle,
 }: MediaCardProps) {
+  const handlePress = () => {
+    onSelect?.(media);
+  };
+
   return (
     <Pressable
-      onPress={() => onSelect?.(media)}
+      onPress={handlePress}
       disabled={!onSelect}
-      style={styles.card}
+      style={style}
+      accessibilityRole={onSelect ? "button" : undefined}
     >
-      <View style={styles.imageContainer}>
-        <Image
-          source={{
-            uri:
-              media.thumbnailUrl ??
-              media.url,
-          }}
-          accessibilityLabel={
-            media.photographer
-              ? `Photo by ${media.photographer.name}`
-              : "Media preview"
-          }
-          style={styles.image}
-        />
+      <Image
+        source={{
+          uri: media.thumbnailUrl ?? media.url,
+        }}
+        accessibilityLabel={
+          media.photographer
+            ? `Photo by ${media.photographer.name}`
+            : "Media preview"
+        }
+        style={imageStyle}
+      />
 
-        {media.type === "video" && (
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>
-              Video
-            </Text>
-          </View>
-        )}
-      </View>
+      {media.type === "video" && (
+        <View style={badgeStyle}>
+          <Text style={badgeTextStyle}>Video</Text>
+        </View>
+      )}
 
       {media.photographer && (
-        <Text style={styles.photographer}>
+        <Text style={textStyle}>
           {media.photographer.name}
         </Text>
       )}
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    overflow: "hidden",
-    borderRadius: 12,
-    backgroundColor: "#ffffff",
-  },
-
-  imageContainer: {
-    position: "relative",
-    aspectRatio: 16 / 10,
-    overflow: "hidden",
-  },
-
-  image: {
-    width: "100%",
-    height: "100%",
-  },
-
-  badge: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 999,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-  },
-
-  badgeText: {
-    color: "#ffffff",
-    fontSize: 12,
-  },
-
-  photographer: {
-    padding: 12,
-    color: "#4b5563",
-    fontSize: 14,
-  },
-});

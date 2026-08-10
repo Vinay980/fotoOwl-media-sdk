@@ -1,6 +1,7 @@
 import {
   useEffect,
   useRef,
+  type ReactNode,
 } from "react";
 
 import type { MediaItem } from "../types/media.js";
@@ -12,16 +13,18 @@ export interface MediaReelProps {
     index: number,
     media: MediaItem,
   ) => void;
+  className?: string;
+  children?: (media: MediaItem, index: number) => ReactNode;
 }
 
 export function MediaReel({
   items,
   activeIndex = 0,
   onActiveChange,
+  className,
+  children,
 }: MediaReelProps) {
-  const itemRefs = useRef<
-    Array<HTMLDivElement | null>
-  >([]);
+  const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
@@ -53,9 +56,9 @@ export function MediaReel({
     });
 
     return () => {
-      observers.forEach((observer) =>
-        observer.disconnect(),
-      );
+      observers.forEach((observer) => {
+        observer.disconnect();
+      });
     };
   }, [items, onActiveChange]);
 
@@ -64,41 +67,23 @@ export function MediaReel({
   }
 
   return (
-    <div
-      style={{
-        height: "80vh",
-        overflowY: "auto",
-        scrollSnapType: "y mandatory",
-      }}
-    >
+    <div className={className}>
       {items.map((media, index) => (
         <div
           key={`${media.type}-${media.id}`}
           ref={(element) => {
             itemRefs.current[index] = element;
           }}
-          style={{
-            height: "80vh",
-            position: "relative",
-            scrollSnapAlign: "start",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "#000",
-          }}
         >
-          {media.type === "video" &&
-          media.videoUrl ? (
+          {children ? (
+            children(media, index)
+          ) : media.type === "video" && media.videoUrl ? (
             <video
               src={media.videoUrl}
               controls
               muted={index !== activeIndex}
               autoPlay={index === activeIndex}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-              }}
+              aria-label={`Video ${index + 1}`}
             />
           ) : (
             <img
@@ -108,11 +93,6 @@ export function MediaReel({
                   ? `Photo by ${media.photographer.name}`
                   : "Media preview"
               }
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-              }}
             />
           )}
         </div>

@@ -1,10 +1,13 @@
 import {
   FlatList,
   Image,
-  StyleSheet,
   Text,
   View,
   type ListRenderItem,
+  type StyleProp,
+  type ImageStyle,
+  type TextStyle,
+  type ViewStyle,
 } from "react-native";
 
 import type { MediaItem } from "../types/media.js";
@@ -15,11 +18,21 @@ export interface MediaReelProps {
     index: number,
     media: MediaItem,
   ) => void;
+  contentContainerStyle?: StyleProp<ViewStyle>;
+  itemStyle?: StyleProp<ViewStyle>;
+  imageStyle?: StyleProp<ImageStyle>;
+  videoBadgeStyle?: StyleProp<ViewStyle>;
+  videoTextStyle?: StyleProp<TextStyle>;
 }
 
 export function MediaReel({
   items,
   onActiveChange,
+  contentContainerStyle,
+  itemStyle,
+  imageStyle,
+  videoBadgeStyle,
+  videoTextStyle,
 }: MediaReelProps) {
   const handleViewableItemsChanged = ({
     viewableItems,
@@ -44,22 +57,23 @@ export function MediaReel({
   const renderItem: ListRenderItem<MediaItem> = ({
     item,
   }) => (
-    <View style={styles.item}>
+    <View style={itemStyle}>
       <Image
         source={{
-          uri: item.url,
+          uri: item.thumbnailUrl ?? item.url,
         }}
         accessibilityLabel={
           item.photographer
             ? `Photo by ${item.photographer.name}`
             : "Media preview"
         }
-        style={styles.image}
+        resizeMode="contain"
+        style={imageStyle}
       />
 
       {item.type === "video" && (
-        <View style={styles.videoBadge}>
-          <Text style={styles.videoText}>
+        <View style={videoBadgeStyle}>
+          <Text style={videoTextStyle}>
             Video
           </Text>
         </View>
@@ -82,36 +96,7 @@ export function MediaReel({
       viewabilityConfig={{
         itemVisiblePercentThreshold: 80,
       }}
+      contentContainerStyle={contentContainerStyle}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  item: {
-    height: 600,
-    backgroundColor: "#000000",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "contain",
-  },
-
-  videoBadge: {
-    position: "absolute",
-    top: 16,
-    right: 16,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 999,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-  },
-
-  videoText: {
-    color: "#ffffff",
-    fontSize: 12,
-  },
-});
