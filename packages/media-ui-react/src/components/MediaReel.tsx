@@ -14,7 +14,11 @@ export interface MediaReelProps {
     media: MediaItem,
   ) => void;
   className?: string;
-  children?: (media: MediaItem, index: number) => ReactNode;
+  itemClassName?: string;
+  children?: (
+    media: MediaItem,
+    index: number,
+  ) => ReactNode;
 }
 
 export function MediaReel({
@@ -22,38 +26,47 @@ export function MediaReel({
   activeIndex = 0,
   onActiveChange,
   className,
+  itemClassName,
   children,
 }: MediaReelProps) {
-  const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const itemRefs = useRef<
+    Array<HTMLDivElement | null>
+  >([]);
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
 
-    itemRefs.current.forEach((element, index) => {
-      if (!element) {
-        return;
-      }
+    itemRefs.current.forEach(
+      (element, index) => {
+        if (!element) {
+          return;
+        }
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry?.isIntersecting) {
-            return;
-          }
+        const observer =
+          new IntersectionObserver(
+            ([entry]) => {
+              if (!entry?.isIntersecting) {
+                return;
+              }
 
-          const media = items[index];
+              const media = items[index];
 
-          if (media) {
-            onActiveChange?.(index, media);
-          }
-        },
-        {
-          threshold: 0.7,
-        },
-      );
+              if (media) {
+                onActiveChange?.(
+                  index,
+                  media,
+                );
+              }
+            },
+            {
+              threshold: 0.7,
+            },
+          );
 
-      observer.observe(element);
-      observers.push(observer);
-    });
+        observer.observe(element);
+        observers.push(observer);
+      },
+    );
 
     return () => {
       observers.forEach((observer) => {
@@ -72,18 +85,25 @@ export function MediaReel({
         <div
           key={`${media.type}-${media.id}`}
           ref={(element) => {
-            itemRefs.current[index] = element;
+            itemRefs.current[index] =
+              element;
           }}
+          className={itemClassName}
         >
           {children ? (
             children(media, index)
-          ) : media.type === "video" && media.videoUrl ? (
+          ) : media.type === "video" &&
+            media.videoUrl ? (
             <video
               src={media.videoUrl}
               controls
               muted={index !== activeIndex}
-              autoPlay={index === activeIndex}
-              aria-label={`Video ${index + 1}`}
+              autoPlay={
+                index === activeIndex
+              }
+              aria-label={`Video ${
+                index + 1
+              }`}
             />
           ) : (
             <img

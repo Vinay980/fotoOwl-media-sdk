@@ -21,10 +21,10 @@ export function MediaLightbox({
 
   return (
     <div
+      className={className}
       role="dialog"
       aria-modal="true"
       aria-label="Media preview"
-      className={className}
       onClick={onClose}
     >
       <button
@@ -43,8 +43,9 @@ export function MediaLightbox({
           event.stopPropagation();
         }}
       >
-        {children ?? (
-          media.type === "video" && media.videoUrl ? (
+        {children ??
+          (media.type === "video" &&
+          media.videoUrl ? (
             <video
               src={media.videoUrl}
               controls
@@ -60,8 +61,7 @@ export function MediaLightbox({
                   : "Media preview"
               }
             />
-          )
-        )}
+          ))}
       </div>
     </div>
   );

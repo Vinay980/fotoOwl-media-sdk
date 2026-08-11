@@ -1,20 +1,44 @@
 import { useState } from "react";
 
 import { useMediaSearch } from "@fotoowl/media-react";
-import { MediaGrid, MediaSearch } from "@fotoowl/media-ui-react";
+
+import {
+  MediaGrid,
+  MediaLightbox,
+  MediaReel,
+  MediaSearch,
+} from "@fotoowl/media-ui-react";
+
+import type { MediaItem } from "@fotoowl/media-ui-react";
+
+type SearchType = "photo" | "video";
 
 export default function App() {
   const [query, setQuery] = useState("nature");
 
+  const [type, setType] = useState<SearchType>("photo");
+
+  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
+
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+
   const { data, loading, loadingMore, error, hasNextPage, loadMore } =
     useMediaSearch({
       query,
-      type: "photo",
+      type,
       perPage: 20,
     });
 
   const handleSearch = (nextQuery: string) => {
     setQuery(nextQuery);
+    setSelectedMedia(null);
+    setActiveVideoIndex(0);
+  };
+
+  const handleTypeChange = (nextType: SearchType) => {
+    setType(nextType);
+    setSelectedMedia(null);
+    setActiveVideoIndex(0);
   };
 
   return (
@@ -36,6 +60,36 @@ export default function App() {
           inputClassName="search-input"
           buttonClassName="search-button"
         />
+
+        <div
+          className="media-type-selector"
+          role="group"
+          aria-label="Media type"
+        >
+          <button
+            type="button"
+            className={
+              type === "photo"
+                ? "media-type-button active"
+                : "media-type-button"
+            }
+            onClick={() => handleTypeChange("photo")}
+          >
+            Photos
+          </button>
+
+          <button
+            type="button"
+            className={
+              type === "video"
+                ? "media-type-button active"
+                : "media-type-button"
+            }
+            onClick={() => handleTypeChange("video")}
+          >
+            Videos
+          </button>
+        </div>
       </header>
 
       <section className="results">
@@ -50,33 +104,39 @@ export default function App() {
         {data && (
           <>
             <div className="results-header">
-              <h2>Results for "{query}"</h2>
+              <h2>
+                {type === "video" ? "Video" : "Photo"} results for "{query}"
+              </h2>
 
               <span>{data.totalResults ?? 0} results</span>
             </div>
 
-            <MediaGrid
-              items={data.items}
-              className="media-grid"
-              itemClassName="media-card"
-            />
-
-            {hasNextPage && (
-              <div className="load-more">
-                <button
-                  type="button"
-                  onClick={() => {
-                    void loadMore();
-                  }}
-                  disabled={loadingMore}
-                >
-                  {loadingMore ? "Loading..." : "Load more"}
-                </button>
-              </div>
+            {type === "photo" ? (
+              <MediaGrid
+                items={data.items}
+                className="media-grid"
+                itemClassName="media-card"
+                onSelect={setSelectedMedia}
+                hasNextPage={hasNextPage}
+                loadingMore={loadingMore}
+                onLoadMore={() => {
+                  void loadMore();
+                }}
+              />
+            ) : (
+              <MediaReel
+                items={data.items}
+                activeIndex={activeVideoIndex}
+                onActiveChange={(index) => {
+                  setActiveVideoIndex(index);
+                }}
+                className="video-reel"
+                itemClassName="video-reel-item"
+              />
             )}
 
             <p className="attribution">
-              Photos provided by{" "}
+              Photos and videos provided by{" "}
               <a
                 href="https://www.pexels.com/"
                 target="_blank"
@@ -88,6 +148,14 @@ export default function App() {
           </>
         )}
       </section>
+
+      <MediaLightbox
+        media={selectedMedia}
+        onClose={() => {
+          setSelectedMedia(null);
+        }}
+        className="media-lightbox"
+      />
     </main>
   );
 }

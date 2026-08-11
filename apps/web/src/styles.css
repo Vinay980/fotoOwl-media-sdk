@@ -249,3 +249,85 @@ h1 {
     grid-template-columns: 1fr;
   }
 }
+
+.media-type-selector {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.media-type-button {
+  padding: 8px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #334155;
+  cursor: pointer;
+}
+
+.media-type-button.active {
+  background: #111827;
+  color: #ffffff;
+  border-color: #111827;
+}
+
+.video-reel {
+  height: 70vh;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  border-radius: 12px;
+  background: #000000;
+}
+
+.video-reel-item {
+  height: 70vh;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+}
+
+.video-reel-item video,
+.video-reel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.media-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.media-lightbox > button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111827;
+  cursor: pointer;
+}
+
+.media-lightbox > div {
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.media-lightbox img,
+.media-lightbox video {
+  display: block;
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+}
