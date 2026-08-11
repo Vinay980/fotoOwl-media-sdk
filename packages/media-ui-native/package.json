@@ -11,8 +11,6 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@fotoowl/media-core": "workspace:*",
-    "@fotoowl/media-native": "workspace:*",
     "react": "^19.1.0",
     "react-native": "*"
   },
