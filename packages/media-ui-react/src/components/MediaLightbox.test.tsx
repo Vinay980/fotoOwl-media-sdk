@@ -30,13 +30,21 @@ describe("MediaLightbox", () => {
       />,
     );
 
-    expect(
-      screen.getByRole("dialog"),
-    ).toBeTruthy();
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    expect(screen.getByAltText("Photo by John Doe")).toBeTruthy();
+  });
 
-    expect(
-      screen.getByAltText("Photo by John Doe"),
-    ).toBeTruthy();
+  it("focuses the close button when opened", () => {
+    render(
+      <MediaLightbox
+        media={media}
+        onClose={vi.fn()}
+      />,
+    );
+
+    expect(document.activeElement).toBe(
+      screen.getByRole("button", { name: "Close media preview" }),
+    );
   });
 
   it("calls onClose when the close button is clicked", () => {
@@ -51,9 +59,24 @@ describe("MediaLightbox", () => {
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Close",
+        name: "Close media preview",
       }),
     );
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls onClose when Escape is pressed", () => {
+    const onClose = vi.fn();
+
+    render(
+      <MediaLightbox
+        media={media}
+        onClose={onClose}
+      />,
+    );
+
+    fireEvent.keyDown(document, { key: "Escape" });
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });
