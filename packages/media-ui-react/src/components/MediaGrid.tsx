@@ -14,11 +14,9 @@ import {
 export interface MediaGridProps {
   items: MediaItem[];
   onSelect?: MediaCardProps["onSelect"];
-  columns?: number;
   className?: string;
   itemClassName?: string;
   children?: ReactNode;
-
   hasNextPage?: boolean;
   loadingMore?: boolean;
   onLoadMore?: () => void;
@@ -49,16 +47,12 @@ export function MediaGrid({
           onLoadMore();
         }
       },
-      {
-        rootMargin: "200px",
-      },
+      { rootMargin: "200px" },
     );
 
     observer.observe(element);
 
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, [hasNextPage, loadingMore, onLoadMore]);
 
   return (
@@ -82,9 +76,7 @@ export function MediaGrid({
           className="media-grid-load-more"
           aria-hidden="true"
         >
-          {loadingMore && (
-            <span>Loading...</span>
-          )}
+          {loadingMore && <span>Loading...</span>}
         </div>
       )}
     </div>
