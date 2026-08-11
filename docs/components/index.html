@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FotoOwl Media UI Components Docs</title>
+  <style>
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;max-width:980px;margin:0 auto;padding:40px 24px;line-height:1.6;color:#172033}h1,h2{line-height:1.2}code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}pre{background:#f5f7fa;padding:16px;border-radius:10px;overflow:auto}code{background:#f1f3f5;padding:2px 5px;border-radius:5px}.note{padding:14px 16px;background:#f5f7fa;border-left:4px solid #555;border-radius:6px}a{color:#2457d6}
+  </style>
+</head>
+<body>
+  <h1>FotoOwl Media UI Components</h1>
+  <p>Reusable React media UI components designed around application-owned data and callbacks.</p>
+  <div class="note">The UI package does not know about Pexels, authentication, or the media SDK. Consumers provide media data and behavior through props and headless APIs.</div>
+
+  <h2>Installation</h2>
+  <pre><code>pnpm add @fotoowl/media-ui-react</code></pre>
+
+  <h2>MediaCard</h2>
+  <pre><code>import { MediaCard } from "@fotoowl/media-ui-react";
+
+&lt;MediaCard
+  media={media}
+  onSelect={setSelectedMedia}
+  className="media-card"
+  imageClassName="media-card-image"
+/&gt;</code></pre>
+  <p>A selectable media item with keyboard activation through Enter and Space. Custom content can be supplied through <code>children</code>.</p>
+
+  <h2>MediaGrid</h2>
+  <pre><code>import { MediaGrid } from "@fotoowl/media-ui-react";
+
+&lt;MediaGrid
+  items={items}
+  onSelect={setSelectedMedia}
+  hasNextPage={hasNextPage}
+  loadingMore={loadingMore}
+  onLoadMore={loadMore}
+/&gt;</code></pre>
+  <p>The grid renders media items and exposes load-more behavior through application callbacks. It does not own the data-fetching state machine.</p>
+
+  <h2>Headless grid API</h2>
+  <pre><code>import { useMediaGrid } from "@fotoowl/media-ui-react";
+
+const { items, getRootProps, getItemProps } = useMediaGrid({
+  items,
+  onSelect: setSelectedMedia,
+});
+
+return (
+  &lt;div {...getRootProps()}&gt;
+    {items.map((media) =&gt; (
+      &lt;div key={`${media.type}-${media.id}`} {...getItemProps(media)}&gt;
+        {/* consumer-owned markup and CSS */}
+      &lt;/div&gt;
+    ))}
+  &lt;/div&gt;
+);</code></pre>
+  <p>Prop-getters expose interaction and accessibility behavior while the consumer owns markup and styling.</p>
+
+  <h2>MediaSearch</h2>
+  <pre><code>&lt;MediaSearch
+  initialQuery={query}
+  loading={loading}
+  onSearch={handleSearch}
+/&gt;</code></pre>
+  <p>The component trims submitted queries, rejects empty submissions, prevents duplicate submission while loading, and never performs network requests itself.</p>
+
+  <h2>MediaLightbox</h2>
+  <pre><code>&lt;MediaLightbox
+  media={selectedMedia}
+  onClose={() =&gt; setSelectedMedia(null)}
+/&gt;</code></pre>
+  <p>The lightbox supports image and video content, dialog semantics, an accessible close button, Escape-to-close behavior, and focus restoration.</p>
+
+  <h2>MediaReel</h2>
+  <pre><code>&lt;MediaReel
+  items={items}
+  activeIndex={activeIndex}
+  onActiveChange={(index, media) =&gt; {
+    setActiveIndex(index);
+  }}
+/&gt;</code></pre>
+  <p>The reel uses visibility detection to report the active item. Consumers can provide the vertical snap CSS/markup contract appropriate to their application.</p>
+
+  <h2>Styling contract</h2>
+  <p>The package does not require a CSS framework and does not impose an application visual design system. Consumers can supply <code>className</code> and component-specific class props or use custom children/headless APIs.</p>
+
+  <h2>Accessibility</h2>
+  <ul>
+    <li>Selectable cards support keyboard activation.</li>
+    <li>Images expose meaningful alt text.</li>
+    <li>Search uses native form semantics and an accessible label.</li>
+    <li>The lightbox exposes dialog semantics and keyboard close behavior.</li>
+    <li>Video content receives an accessible label.</li>
+  </ul>
+
+  <h2>Architecture</h2>
+  <pre><code>Application
+├── media-react        → data/auth/events
+└── media-ui-react     → presentation/interaction</code></pre>
+  <p>Components receive data and callbacks as props. They do not import <code>media-core</code> or <code>media-react</code>.</p>
+
+  <p><a href="https://github.com/Vinay980/fotoOwl-media-sdk">View the source on GitHub</a></p>
+</body>
+</html>
