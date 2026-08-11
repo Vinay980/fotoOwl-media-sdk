@@ -1,5 +1,5 @@
 {
   "installCommand": "corepack enable && pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm build",
+  "buildCommand": "pnpm --filter @fotoowl/media-core build && pnpm --filter @fotoowl/media-react build && pnpm --filter @fotoowl/media-ui-react build && pnpm --filter @fotoowl/web build",
   "outputDirectory": "apps/web/dist"
 }
