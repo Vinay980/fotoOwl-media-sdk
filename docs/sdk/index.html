@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FotoOwl Media SDK Docs</title>
+  <style>
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;max-width:980px;margin:0 auto;padding:40px 24px;line-height:1.6;color:#172033}h1,h2{line-height:1.2}code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}pre{background:#f5f7fa;padding:16px;border-radius:10px;overflow:auto}code{background:#f1f3f5;padding:2px 5px;border-radius:5px}.note{padding:14px 16px;background:#f5f7fa;border-left:4px solid #555;border-radius:6px}a{color:#2457d6}
+  </style>
+</head>
+<body>
+  <h1>FotoOwl Media SDK</h1>
+  <p>Framework-agnostic TypeScript media SDK backed by the Pexels API.</p>
+  <div class="note">The core package contains no React, DOM, or React Native dependencies. Platform wrappers adapt the core SDK to React and React Native.</div>
+
+  <h2>Installation</h2>
+  <pre><code>pnpm add @fotoowl/media-core</code></pre>
+
+  <h2>Create a client</h2>
+  <pre><code>import { createMediaClient } from "@fotoowl/media-core";
+
+const client = createMediaClient({
+  apiKey: "YOUR_PEXELS_API_KEY",
+});</code></pre>
+
+  <h2>Search</h2>
+  <pre><code>const result = await client.search({
+  query: "nature",
+  type: "photo",
+  page: 1,
+  perPage: 20,
+});</code></pre>
+  <p>Search supports photo, video, or combined media requests. Results are normalized into SDK-owned types.</p>
+
+  <h2>Curated media</h2>
+  <pre><code>const result = await client.curated({
+  page: 1,
+  perPage: 20,
+});</code></pre>
+
+  <h2>Get a media item</h2>
+  <pre><code>const result = await client.getById("123");</code></pre>
+
+  <h2>Typed models</h2>
+  <p>The core exports <code>MediaItem</code>, <code>MediaPage</code>, media types, API result types, event types, <code>MediaError</code>, <code>MediaClient</code>, and <code>createMediaClient</code>.</p>
+
+  <h2>Pagination</h2>
+  <p>Search and curated results expose page information and whether another page is available. Consumers can request the next page explicitly or use the React hook's <code>loadMore()</code> helper.</p>
+
+  <h2>Caching and request de-duplication</h2>
+  <p>The client provides in-memory caching with configurable TTL support. Concurrent requests for the same resource can share an in-flight request instead of issuing duplicate network calls.</p>
+
+  <h2>Events</h2>
+  <pre><code>const unsubscribe = client.on("view", (event) =&gt; {
+  console.log(event.media);
+});
+
+client.trackView(media);
+client.trackDownload(media);
+
+unsubscribe();</code></pre>
+  <p>The SDK supports view and download activity events. Subscriptions return an unsubscribe function, and the SDK also has a default console listener for activity events.</p>
+
+  <h2>Error handling</h2>
+  <p>SDK failures are represented by the typed <code>MediaError</code> contract rather than exposing raw provider-specific errors to consumers.</p>
+
+  <h2>React integration</h2>
+  <pre><code>import {
+  MediaProvider,
+  useMediaSearch,
+} from "@fotoowl/media-react";
+
+&lt;MediaProvider apiKey={apiKey}&gt;
+  &lt;App /&gt;
+&lt;/MediaProvider&gt;
+
+function Results() {
+  const { data, loading, error, hasNextPage, loadMore } =
+    useMediaSearch({
+      query: "nature",
+      type: "photo",
+      perPage: 20,
+    });
+
+  // render data.items and use loadMore() for pagination
+}</code></pre>
+  <p>The React package exports <code>MediaProvider</code>, <code>useMediaClient</code>, <code>useMediaSearch</code>, and <code>useMediaItem</code>. The wrapper adapts the framework-agnostic core and does not replace it.</p>
+
+  <h2>Architecture</h2>
+  <pre><code>Application
+   ↓
+media-react / media-native
+   ↓
+media-core
+   ↓
+Pexels API</code></pre>
+
+  <p><a href="https://github.com/Vinay980/fotoOwl-media-sdk">View the source on GitHub</a></p>
+</body>
+</html>
