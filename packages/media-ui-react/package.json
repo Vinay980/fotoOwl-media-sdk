@@ -17,6 +17,8 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@fotoowl/media-core": "workspace:*",
+    "@fotoowl/media-react": "workspace:*",
     "react": "^19.1.0"
   },
   "devDependencies": {
